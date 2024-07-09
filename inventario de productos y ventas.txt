@@ -1,0 +1,158 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+
+using namespace std;
+
+struct Producto {
+    string nombre;
+    float precio;
+};
+
+struct Venta {
+    int idVenta;
+    string producto;
+    int cantidad;
+    float precioTotal;
+};
+
+int main() {
+    vector<Producto> productos;
+    vector<Venta> ventas;
+    bool salir = false;
+
+    while (!salir) {
+        char opcion;
+        cout << "Menú de Inventario de Productos y Ventas:" << endl;
+        cout << "A. Registrar un nuevo producto" << endl;
+        cout << "B. Listar los productos registrados" << endl;
+        cout << "C. Buscar un producto por nombre" << endl;
+        cout << "D. Actualizar los datos de un producto" << endl;
+        cout << "E. Eliminar un producto" << endl;
+        cout << "F. Registrar una venta" << endl;
+        cout << "G. Listar las ventas realizadas" << endl;
+        cout << "H. Calcular el total de ventas realizadas" << endl;
+        cout << "S. Salir del programa" << endl;
+        cout << "Ingrese una opción: ";
+        cin >> opcion;
+
+        switch (toupper(opcion)) {
+            case 'A': {
+                Producto nuevoProducto;
+                cout << "Ingrese el nombre del producto: ";
+                cin.ignore();
+                getline(cin, nuevoProducto.nombre);
+                cout << "Ingrese el precio del producto: ";
+                cin >> nuevoProducto.precio;
+                productos.push_back(nuevoProducto);
+                cout << "Producto registrado exitosamente." << endl;
+                break;
+            }
+            case 'B': {
+                if (productos.empty()) {
+                    cout << "No hay productos registrados." << endl;
+                } else {
+                    cout << "Listado de productos registrados:" << endl;
+                    for (const auto& producto : productos) {
+                        cout << "Nombre: " << producto.nombre << ", Precio: $" << producto.precio << endl;
+                    }
+                }
+                break;
+            }
+            case 'C': {
+                string nombreBuscar;
+                cout << "Ingrese el nombre del producto a buscar: ";
+                cin.ignore();
+                getline(cin, nombreBuscar);
+                auto it = find_if(productos.begin(), productos.end(), [&](const Producto& p) {
+                    return p.nombre == nombreBuscar;
+                });
+                if (it != productos.end()) {
+                    cout << "Producto encontrado: Nombre: " << it->nombre << ", Precio: $" << it->precio << endl;
+                } else {
+                    cout << "No se encontró el producto con el nombre ingresado." << endl;
+                }
+                break;
+            }
+            case 'D': {
+                string nombreActualizar;
+                cout << "Ingrese el nombre del producto a actualizar: ";
+                cin.ignore();
+                getline(cin, nombreActualizar);
+                auto it = find_if(productos.begin(), productos.end(), [&](const Producto& p) {
+                    return p.nombre == nombreActualizar;
+                });
+                if (it != productos.end()) {
+                    cout << "Ingrese el nuevo precio del producto: ";
+                    cin >> it->precio;
+                    cout << "Producto actualizado exitosamente." << endl;
+                } else {
+                    cout << "No se encontró el producto con el nombre ingresado." << endl;
+                }
+                break;
+            }
+            case 'E': {
+                string nombreEliminar;
+                cout << "Ingrese el nombre del producto a eliminar: ";
+                cin.ignore();
+                getline(cin, nombreEliminar);
+                auto it = find_if(productos.begin(), productos.end(), [&](const Producto& p) {
+                    return p.nombre == nombreEliminar;
+                });
+                if (it != productos.end()) {
+                    productos.erase(it);
+                    cout << "Producto eliminado exitosamente." << endl;
+                } else {
+                    cout << "No se encontró el producto con el nombre ingresado." << endl;
+                }
+                break;
+            }
+            case 'F': {
+                Venta nuevaVenta;
+                cout << "Ingrese el ID de la venta: ";
+                cin >> nuevaVenta.idVenta;
+                cout << "Ingrese el nombre del producto vendido: ";
+                cin.ignore();
+                getline(cin, nuevaVenta.producto);
+                cout << "Ingrese la cantidad vendida: ";
+                cin >> nuevaVenta.cantidad;
+                cout << "Ingrese el precio total de la venta: ";
+                cin >> nuevaVenta.precioTotal;
+                ventas.push_back(nuevaVenta);
+                cout << "Venta registrada exitosamente." << endl;
+                break;
+            }
+            case 'G': {
+                if (ventas.empty()) {
+                    cout << "No hay ventas registradas." << endl;
+                } else {
+                    cout << "Listado de ventas realizadas:" << endl;
+                    for (const auto& venta : ventas) {
+                        cout << "ID de venta: " << venta.idVenta << ", Producto: " << venta.producto << ", Cantidad: " << venta.cantidad << ", Precio total: $" << venta.precioTotal << endl;
+                    }
+                }
+                break;
+            }
+            case 'H': {
+                float totalVentas = 0.0;
+                for (const auto& venta : ventas) {
+                    totalVentas += venta.precioTotal;
+                }
+                cout << "El total de ventas realizadas es: $" << totalVentas << endl;
+                break;
+            }
+            case 'S': {
+                salir = true;
+                cout << "Saliendo del programa..." << endl;
+                break;
+            }
+            default: {
+                cout << "Opción inválida. Intente de nuevo." << endl;
+                break;
+            }
+        }
+    }
+
+    return 0;
+}
